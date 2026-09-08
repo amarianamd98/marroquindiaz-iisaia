@@ -1,6 +1,6 @@
 # Prompts — TP 1
 
-El registro del proceso, en orden. Tres prompts en una sola conversación de Claude. El artefacto quedó terminado en el tercero.
+El registro del proceso, en orden. Tres prompts en una sola conversación de Gemini Canvas, sin reiniciar el hilo — cada prompt partió del artefacto que dejó el anterior. El artefacto final quedó terminado en el tercero, en un único archivo HTML de 828 líneas.
 
 ---
 
@@ -25,6 +25,7 @@ Estructura:
   tipo ni formato.
 - <footer> con un <button> "Siguiente" y, debajo, un área para mensajes
   de error.
+
 Estilo:
 - Fondo blanco, bordes de los inputs en gris muy claro (#eee) casi
   invisibles sobre el fondo.
@@ -33,6 +34,7 @@ Estilo:
   visualmente idénticos (mismo color, mismo peso), para que no quede
   claro qué es clickeable.
 - Cero indicación de foco visible al navegar con teclado.
+
 Comportamiento:
 - Estado: valores (objeto con los campos), errores (array), enviado
   (booleano).
@@ -57,6 +59,7 @@ Comportamiento:
   ningún aviso previo, vaciar todos los campos del formulario.
 - El botón "Siguiente" no debe deshabilitarse tras hacer click, para
   permitir múltiples envíos seguidos.
+
 Constraints:
 - Un solo archivo HTML, con el CSS en un <style> y el JS en un
   <script>.
@@ -69,30 +72,44 @@ Constraints:
 
 **Qué devolvió:** el formulario completo funcionando: los campos en el orden ilógico pedido, la barra de progreso fija en el paso 1, la validación disparándose toda junta al hacer click en "Siguiente", el mensaje de error genérico, el borrado de las contraseñas al fallar, y el vaciado silencioso a los 60 segundos. Respetó los constraints: un solo archivo, vanilla JS, sin backend real.
 
-**Qué hice con eso:** lo acepté. Pero el prompt tenía dos ambigüedades que no vi al escribirlo y que el modelo resolvió por su cuenta:
-Pedí "al menos 20 opciones sin buscador y en un orden aleatorio" para el país, pero nunca especifiqué cuáles 20 países ni qué criterio de desorden usar — el modelo eligió una lista y un orden fijo por su cuenta. Pedí que el año "empiece en 2024 y baje de uno en uno", pero no dije hasta dónde — el modelo decidió arbitrariamente parar en 1900.
+**Qué hice con eso:** lo acepté. Pero el prompt tenía dos ambigüedades que no vi al escribirlo y que el modelo resolvió por su cuenta: pedí "al menos 20 opciones sin buscador y en un orden aleatorio" para el país, pero nunca especifiqué cuáles 20 países ni qué criterio de desorden usar — el modelo eligió una lista y un orden fijo por su cuenta. Pedí que el año "empiece en 2024 y baje de uno en uno", pero no dije hasta dónde — el modelo decidió arbitrariamente parar en 1900.
 
 Ninguna de las dos rompe el ejercicio (ambas caen dentro del espíritu de "mal UX"), pero son decisiones que tomó el modelo y no yo, y por eso las dejo documentadas.
 
 ---
 
-## 2 — Iterar sobre el estado: reordenar las canaletas
+## 2 — Iterar sobre el estado: reordenar los países
 
 ```
-Cambia el selector de país por una lista de chips clickeables (los mismos 20 países, en el mismo orden aleatorio fijo en el HTML). Agrégale dos estados: `paises` (el array de 20 países, hoy fijos en el HTML) y `seleccionado` (el índice del chip tocado primero, o null). Click en un chip con `seleccionado` en null: pasa a ser ese índice y el chip se marca. Click en otro chip: se intercambian los dos países dentro de `paises`, `seleccionado` vuelve a null y se sacan las marcas. Click en el chip ya seleccionado: `seleccionado` vuelve a null sin intercambiar nada. Dos reglas: mientras `enviando` es true los clicks en los chips no hacen nada, y el valor que se guarda en `valores.pais` pertenece a la posición del chip, no al país que quedó ahí — al intercambiar, el índice no se mueve.
+Cambia el selector de país por una lista de chips clickeables (los mismos
+20 países, en el mismo orden aleatorio fijo en el HTML). Agrégale dos
+estados: `paises` (el array de 20 países, hoy fijos en el HTML) y
+`seleccionado` (el índice del chip tocado primero, o null).
+
+Click en un chip con `seleccionado` en null: pasa a ser ese índice y el
+chip se marca.
+Click en otro chip: se intercambian los dos países dentro de `paises`,
+`seleccionado` vuelve a null y se sacan las marcas.
+Click en el chip ya seleccionado: `seleccionado` vuelve a null sin
+intercambiar nada.
+
+Dos reglas: mientras `enviando` es true los clicks en los chips no hacen
+nada, y el valor que se guarda en `valores.pais` pertenece a la posición
+del chip, no al país que quedó ahí — al intercambiar, el índice no se
+mueve.
 ```
 
-**Qué intentaba lograr:** devolverle agencia al usuario. Sin esto, el selector de país es una lista más: eliges de un <select> normal. Con esto, el usuario puede "corregir" el orden alfabético manualmente, intentando reordenar los países a su gusto — que es justamente donde se esconde la trampa.
+**Qué intentaba lograr:** devolverle agencia al usuario. Sin esto, el selector de país es una lista más: eliges de un `<select>` normal. Con esto, el usuario puede "corregir" el orden alfabético manualmente, intentando reordenar los países a su gusto — que es justamente donde se esconde la trampa.
 
-**Por qué está escrito así:** las tres líneas de click son la ida y dos vueltas distintas — completar el intercambio, y cancelar la selección. Nombrar solo la ida deja al modelo inventando cómo se sale del estado, y lo más común es que no haya forma de deseleccionar un chip sin intercambiarlo.
+**Por qué está escrito así:** las tres líneas de click son la ida y **dos** vueltas distintas — completar el intercambio, y cancelar la selección. Nombrar solo la ida deja al modelo inventando cómo se sale del estado, y lo más común es que no haya forma de deseleccionar un chip sin intercambiarlo.
 
-Las dos reglas del final previenen bugs concretos. Sin la primera, intercambiar chips mientras enviando está en curso (por ejemplo, justo cuando se dispara la validación) deja el formulario guardando un país distinto del que el usuario vio al hacer click. Sin la segunda, el modelo mueve el valor guardado junto con el nombre del país al intercambiar, porque están renderizados en el mismo elemento — es la confusión clásica entre el estado y su reflejo en el DOM: el índice del chip debía quedarse fijo, y solo el texto visible debía moverse.
+Las dos reglas del final previenen bugs concretos. Sin la primera, intercambiar chips mientras `enviando` está en curso (por ejemplo, justo cuando se dispara la validación) deja el formulario guardando un país distinto del que el usuario vio al hacer click. Sin la segunda, el modelo mueve el valor guardado junto con el nombre del país al intercambiar, porque están renderizados en el mismo elemento — es la confusión clásica entre el estado y su reflejo en el DOM: el índice del chip debía quedarse fijo, y solo el texto visible debía moverse.
 
-**Qué devolvió:** las tres transiciones correctas y las dos reglas respetadas. El valor guardado en valores.pais se quedó en la posición del chip al intercambiar, no en el país que quedó ahí.
+**Qué devolvió:** las tres transiciones correctas y las dos reglas respetadas. El valor guardado en `valores.pais` se quedó en la posición del chip al intercambiar, no en el país que quedó ahí.
 
 ---
 
-## 3 — Envolver el captcha en una página anfitriona
+## 3 — Envolver el formulario en una página anfitriona
 
 ```
 Envolvé el formulario en una página que sea sobre otra cosa.
@@ -125,5 +142,3 @@ ser un paso.
 **Por qué la última línea:** un pedido estructural como este es el caso donde el modelo tiende a reescribir lo que ya funcionaba, y ahí se pierde el trabajo de los dos prompts anteriores (el orden de campos, la validación, los chips intercambiables). Decirlo explícito — "el formulario no cambia por dentro" — lo evitó.
 
 **Qué devolvió:** los tres pasos funcionando, con el formulario intacto adentro del segundo. La landing quedó como una plataforma cualquiera pidiendo crear cuenta.
-
----

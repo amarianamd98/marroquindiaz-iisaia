@@ -125,3 +125,5 @@ ser un paso.
 **Por qué la última línea:** un pedido estructural como este es el caso donde el modelo tiende a reescribir lo que ya funcionaba, y ahí se pierde el trabajo de los dos prompts anteriores (el orden de campos, la validación, los chips intercambiables). Decirlo explícito — "el formulario no cambia por dentro" — lo evitó.
 
 **Qué devolvió:** los tres pasos funcionando, con el formulario intacto adentro del segundo. La landing quedó como una plataforma cualquiera pidiendo crear cuenta.
+
+---

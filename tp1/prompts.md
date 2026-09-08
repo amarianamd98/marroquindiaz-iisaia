@@ -9,6 +9,7 @@ El registro del proceso, en orden. Tres prompts en una sola conversación de Gem
 ```
 Construye un formulario de registro de datos personales que sea
 intencionalmente un desastre de UX, como ejercicio didáctico.
+
 Estructura:
 - <header> con el título "Registro de usuario" y, debajo, una barra de
   progreso de 3 pasos que nunca se actualiza (siempre se ve en el paso 1,

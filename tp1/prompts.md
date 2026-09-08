@@ -7,43 +7,61 @@ El registro del proceso, en orden. Tres prompts en una sola conversación de Gem
 ## 1 — Prompt inicial
 
 ```
-Construí un captcha de verificación que funciona con una máquina de Galton.
-
+Construye un formulario de registro de datos personales que sea
+intencionalmente un desastre de UX, como ejercicio didáctico.
 Estructura:
-- <header> con el título "Verificación de seguridad" y el captcha objetivo:
-  3 letras que el usuario tiene que ingresar, generadas al azar al cargar.
-- <main> con el tablero: un triángulo de pegs de 4 filas (1, 2, 3 y 4 pegs por fila) y, debajo, una fila de 5 canaletas. Cada canaleta muestra
-  una letra (A a E, de izquierda a derecha).
-- <footer> con lo ingresado hasta ahora, un <button> "Soltar bola" y un
-  <button> "Borrar último".
-
+- <header> con el título "Registro de usuario" y, debajo, una barra de
+  progreso de 3 pasos que nunca se actualiza (siempre se ve en el paso 1,
+  sin importar en qué parte del formulario esté el usuario).
+- <main> con los campos, en este orden exacto (deliberadamente ilógico):
+  contraseña, confirmar contraseña, correo electrónico, teléfono,
+  apellido, país (select), nombre, fecha de nacimiento (tres selects:
+  año empezando en 2024 y bajando de uno en uno, mes, día), checkbox
+  "Acepto términos y condiciones" (sin marcar) y checkbox "Suscribirme
+  al boletín publicitario" (premarcado). El campo "nombre" no debe
+  tener <label>, solo un ícono de usuario genérico. El campo "teléfono"
+  debe tener como único texto de ayuda "Número" sin especificar de qué
+  tipo ni formato.
+- <footer> con un <button> "Siguiente" y, debajo, un área para mensajes
+  de error.
 Estilo:
-- Estética de captcha viejo: fondo gris claro, bordes duros, tipografía
-  monoespaciada, cero redondeo.
-- Pegs como círculos chicos grises. La bola, un círculo naranja.
-- Las canaletas del centro y las de los bordes se ven iguales: la
-  probabilidad está escrita, no señalizada con color.
-
+- Fondo blanco, bordes de los inputs en gris muy claro (#eee) casi
+  invisibles sobre el fondo.
+- Tipografía pequeña (11px) en todas las etiquetas.
+- Botón "Siguiente" y el texto plano del formulario deben verse
+  visualmente idénticos (mismo color, mismo peso), para que no quede
+  claro qué es clickeable.
+- Cero indicación de foco visible al navegar con teclado.
 Comportamiento:
-- Estado: objetivo (3 letras), ingresados (array de letras, máximo 3),
-  cayendo (booleano que bloquea la interacción durante la animación).
-- Al click en "Soltar bola": si cayendo es false y ingresados tiene menos
-  de 3 letras, arranca la caída. La bola aparece arriba del primer peg y
-  baja fila por fila. En cada fila decide al azar 50/50 izquierda o
-  derecha, y se desplaza media columna hacia ese lado mientras baja una
-  fila. Cada paso dura 220ms. Después de la sexta fila cae en la canaleta
-  correspondiente y su letra se agrega a ingresados.
-- Al click en "Borrar último": saca la última letra de ingresados. No hace
-  falta soltar ninguna bola para borrar.
-- Cuando ingresados llega a 3 letras, comparar con objetivo y mostrar en el
-  footer si la verificación pasó o falló, con un botón para reiniciar que
-  genera un objetivo nuevo y vacía ingresados.
-
+- Estado: valores (objeto con los campos), errores (array), enviado
+  (booleano).
+- El botón "Siguiente" no avanza a ningún paso 2 real: al hacer click,
+  ejecuta la validación de todos los campos de una sola vez (nunca en
+  tiempo real mientras el usuario escribe).
+- Si hay errores, mostrar un único mensaje genérico "Error" en el área
+  de mensajes, sin decir cuál campo falló ni por qué. Además, borrar
+  por completo el contenido de los campos de contraseña (no solo
+  marcarlos) obligando a reescribirlos.
+- La validación de contraseña exige mayúscula, número, símbolo y
+  mínimo 12 caracteres, pero ese requisito solo se muestra después de
+  que el usuario falla la primera vez, nunca antes.
+- El campo "teléfono" debe rechazar el símbolo "+" y los espacios, sin
+  explicar por qué en ningún mensaje.
+- El selector de país debe tener al menos 20 opciones sin buscador y
+  en un orden aleatorio (no alfabético).
+- Si todos los campos pasan la validación, no mostrar ninguna
+  confirmación visual: la pantalla se queda igual, como si no hubiera
+  pasado nada.
+- Agregar un temporizador: a los 60 segundos de cargada la página, sin
+  ningún aviso previo, vaciar todos los campos del formulario.
+- El botón "Siguiente" no debe deshabilitarse tras hacer click, para
+  permitir múltiples envíos seguidos.
 Constraints:
-- Un solo archivo HTML, con el CSS en un <style> y el JS en un <script>.
+- Un solo archivo HTML, con el CSS en un <style> y el JS en un
+  <script>.
 - Vanilla JS, sin frameworks ni dependencias externas.
-- Los pegs, la bola y las canaletas son elementos del DOM posicionados con
-  CSS. No usar <canvas>: quiero poder ver el estado reflejado en el DOM.
+- No necesita conectarse a ningún backend real; el envío puede
+  simularse con JavaScript.
 ```
 
 **Qué intentaba lograr:** el artefacto entero de una sola vez, nombrando las cinco capas — estructura con etiquetas semánticas, estilo, comportamiento expresado como estado, y constraints de empaque.

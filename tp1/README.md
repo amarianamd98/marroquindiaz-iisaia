@@ -26,8 +26,8 @@ En cada paso definí yo el estado (variables y sus transiciones) y las reglas de
 - Mantener la lógica interna del formulario intacta al envolverlo en la landing, pidiendo explícitamente "el formulario no cambia por dentro", para aislar el cambio de contexto (página vs. paso) del comportamiento ya construido.
 
 ## Qué salió mal y cómo lo corregí
-
-_(completar con lo que efectivamente falló al correr o revisar el HTML: por ejemplo, si el intercambio de países no actualizaba visualmente los chips, si la barra de progreso no se ocultaba correctamente entre pasos, o si el temporizador de 60 segundos interfería con el paso "confirmado". Ajustar según lo que observaste al probarlo en el navegador.)_
+ 
+Al revisar el HTML generado encontré que el campo "nombre" quedó con `aria-label=""` vacío en el input, en vez de simplemente no tener ningún atributo de accesibilidad. Pedí explícitamente que el campo no tuviera `<label>` y solo un ícono genérico, pero el resultado fue más severo de lo esperado: un lector de pantalla no anuncia nada en absoluto para ese campo (ni siquiera "campo de texto sin nombre"), en vez de simplemente omitir la etiqueta visual. Quedó documentado como parte del anti-patrón de accesibilidad, pero es un matiz que no había considerado al escribir el prompt.
 
 ## Cómo se ejecuta
 

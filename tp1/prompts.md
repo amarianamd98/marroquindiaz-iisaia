@@ -1,6 +1,6 @@
 # Prompts — TP 1
 
-El registro del proceso, en orden. Tres prompts en una sola conversación de Gemini Canvas, sin reiniciar el hilo — cada prompt partió del artefacto que dejó el anterior. El artefacto final quedó terminado en el tercero, en un único archivo HTML de 828 líneas.
+El registro del proceso, en orden. Tres prompts en una sola conversación de Gemini Canvas, sin reiniciar el hilo — cada prompt partió del artefacto que dejó el anterior. El artefacto final quedó terminado en el tercero, en un único archivo HTML de 639 líneas.
 
 ---
 

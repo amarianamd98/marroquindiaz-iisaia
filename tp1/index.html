@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corvo</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+  }
+
+  /* ---- Página (landing) ---- */
+  .pagina {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .header-plataforma {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .nombre-plataforma {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  #btn-crear-cuenta {
+    border: 1px solid #333;
+    border-radius: 2px;
+    padding: 8px 14px;
+    font-size: 14px;
+    background: #333;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  #main-plataforma {
+    padding: 32px 0;
+    min-height: 260px;
+  }
+
+  #vista-bienvenida p {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #444;
+    max-width: 480px;
+  }
+
+  #vista-confirmado h2 {
+    font-size: 18px;
+    margin: 0 0 12px 0;
+  }
+
+  #vista-confirmado ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #444;
+  }
+
+  .footer-plataforma {
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+    font-size: 12px;
+    color: #777;
+  }
+
+  /* ---- Formulario (paso "formulario") ---- */
+  .contenedor {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .contenedor > header h1 {
+    font-size: 18px;
+    margin: 0 0 12px 0;
+  }
+
+  /* Barra de progreso que nunca cambia: siempre "paso 1" */
+  .barra-progreso {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+  }
+
+  .paso-barra {
+    flex: 1;
+    height: 4px;
+    background: #eee;
+  }
+
+  .paso-barra.activo {
+    background: #999;
+  }
+
+  .contenedor > main {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  label {
+    font-size: 11px;
+    color: #333;
+  }
+
+  input,
+  select {
+    border: 1px solid #eee;
+    border-radius: 2px;
+    padding: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+    outline: none; /* cero indicación de foco */
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: #eee; /* el foco no cambia nada visible */
+  }
+
+  .ayuda {
+    font-size: 11px;
+    color: #333;
+  }
+
+  .campo-checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .campo-checkbox label {
+    font-size: 11px;
+  }
+
+  .icono-usuario {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-bottom: 4px;
+  }
+
+  /* Chips de país */
+  .chips-pais {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    border: 1px solid #eee;
+    border-radius: 2px;
+    padding: 6px 10px;
+    font-size: 11px;
+    background: #fff;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .chip.seleccionado {
+    background: #ddd;
+  }
+
+  .contenedor > footer {
+    margin-top: 24px;
+  }
+
+  /* El botón "Siguiente" y el texto plano se ven idénticos: mismo color y peso */
+  #btn-siguiente,
+  .texto-plano {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  #btn-siguiente {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  #area-mensajes {
+    font-size: 11px;
+    color: #333;
+    min-height: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="pagina">
+  <header class="header-plataforma">
+    <div class="nombre-plataforma">Corvo</div>
+    <button type="button" id="btn-crear-cuenta">Crear cuenta</button>
+  </header>
+
+  <main id="main-plataforma">
+
+    <!-- paso: bienvenida -->
+    <section id="vista-bienvenida">
+      <p>
+        Corvo es la plataforma para organizar el trabajo de tu equipo en un
+        solo lugar: tareas, calendarios y documentos conectados, sin cambiar
+        de app. Empezá gratis y sumá a tu equipo cuando quieras.
+      </p>
+    </section>
+
+    <!-- paso: formulario -->
+    <div id="vista-formulario" style="display:none;">
+      <div class="contenedor">
+        <header>
+          <h1>Registro de usuario</h1>
+          <div class="barra-progreso">
+            <div class="paso-barra activo"></div>
+            <div class="paso-barra"></div>
+            <div class="paso-barra"></div>
+          </div>
+        </header>
+
+        <main>
+          <div class="campo">
+            <label for="contrasena">Contraseña</label>
+            <input type="password" id="contrasena" name="contrasena">
+          </div>
+
+          <div class="campo">
+            <label for="confirmar-contrasena">Confirmar contraseña</label>
+            <input type="password" id="confirmar-contrasena" name="confirmarContrasena">
+          </div>
+
+          <div class="campo">
+            <label for="correo">Correo electrónico</label>
+            <input type="text" id="correo" name="correo">
+          </div>
+
+          <div class="campo">
+            <label for="telefono">Teléfono</label>
+            <input type="text" id="telefono" name="telefono">
+            <span class="ayuda">Número</span>
+          </div>
+
+          <div class="campo">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido">
+          </div>
+
+          <div class="campo">
+            <label>País</label>
+            <div class="chips-pais" id="chips-pais"></div>
+          </div>
+
+          <div class="campo">
+            <span class="icono-usuario" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="#999">
+                <circle cx="12" cy="8" r="4"></circle>
+                <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"></path>
+              </svg>
+            </span>
+            <input type="text" id="nombre" name="nombre" aria-label="">
+          </div>
+
+          <div class="campo">
+            <label>Fecha de nacimiento</label>
+            <div style="display:flex; gap:6px;">
+              <select id="anio" name="anio"></select>
+              <select id="mes" name="mes">
+                <option value="">Mes</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+              <select id="dia" name="dia"></select>
+            </div>
+          </div>
+
+          <div class="campo campo-checkbox">
+            <input type="checkbox" id="acepto-terminos" name="aceptoTerminos">
+            <label for="acepto-terminos">Acepto términos y condiciones</label>
+          </div>
+
+          <div class="campo campo-checkbox">
+            <input type="checkbox" id="boletin" name="boletin" checked>
+            <label for="boletin">Suscribirme al boletín publicitario</label>
+          </div>
+        </main>
+
+        <footer>
+          <button type="button" id="btn-siguiente">Siguiente</button>
+          <span class="texto-plano">Al continuar aceptas nuestras políticas</span>
+          <div id="area-mensajes"></div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- paso: confirmado -->
+    <section id="vista-confirmado" style="display:none;">
+      <h2>¡Bienvenido/a a Corvo!</h2>
+      <ul id="lista-confirmacion"></ul>
+    </section>
+
+  </main>
+
+  <footer class="footer-plataforma">
+    <p>¿Preguntas? Escribinos a soporte@corvo.app</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // ---- Poblar año (empezando en 2024, bajando de uno en uno) y día ----
+  var selAnio = document.getElementById('anio');
+  var opcionAnio = document.createElement('option');
+  opcionAnio.value = '';
+  opcionAnio.textContent = 'Año';
+  selAnio.appendChild(opcionAnio);
+  for (var y = 2024; y >= 1900; y--) {
+    var opt = document.createElement('option');
+    opt.value = String(y);
+    opt.textContent = String(y);
+    selAnio.appendChild(opt);
+  }
+
+  var selDia = document.getElementById('dia');
+  var opcionDia = document.createElement('option');
+  opcionDia.value = '';
+  opcionDia.textContent = 'Día';
+  selDia.appendChild(opcionDia);
+  for (var d = 1; d <= 31; d++) {
+    var optd = document.createElement('option');
+    optd.value = String(d);
+    optd.textContent = String(d);
+    selDia.appendChild(optd);
+  }
+
+  // Orden fijo (no alfabético) de los 20 países
+  var PAISES_INICIAL = [
+    'Brasil', 'Japón', 'Canadá', 'Egipto', 'Noruega', 'México', 'India',
+    'Sudáfrica', 'España', 'Australia', 'Alemania', 'Perú', 'Tailandia',
+    'Colombia', 'Turquía', 'Chile', 'Marruecos', 'Vietnam', 'Argentina', 'Finlandia'
+  ];
+
+  // ---- Estado ----
+  var estado = {
+    paso: 'bienvenida', // "bienvenida" | "formulario" | "confirmado"
+    valores: {
+      contrasena: '',
+      confirmarContrasena: '',
+      correo: '',
+      telefono: '',
+      apellido: '',
+      pais: null, // guarda el ÍNDICE del chip, no el nombre del país
+      nombre: '',
+      anio: '',
+      mes: '',
+      dia: '',
+      aceptoTerminos: false,
+      boletin: true
+    },
+    errores: [],
+    enviado: false,
+    enviando: false,
+    paises: PAISES_INICIAL.slice(),
+    seleccionado: null
+  };
+
+  var fallosContrasenaPrevios = false;
+
+  var vistaBienvenida = document.getElementById('vista-bienvenida');
+  var vistaFormulario = document.getElementById('vista-formulario');
+  var vistaConfirmado = document.getElementById('vista-confirmado');
+  var listaConfirmacion = document.getElementById('lista-confirmacion');
+
+  var campos = {
+    contrasena: document.getElementById('contrasena'),
+    confirmarContrasena: document.getElementById('confirmar-contrasena'),
+    correo: document.getElementById('correo'),
+    telefono: document.getElementById('telefono'),
+    apellido: document.getElementById('apellido'),
+    nombre: document.getElementById('nombre'),
+    anio: selAnio,
+    mes: document.getElementById('mes'),
+    dia: selDia,
+    aceptoTerminos: document.getElementById('acepto-terminos'),
+    boletin: document.getElementById('boletin')
+  };
+
+  var areaMensajes = document.getElementById('area-mensajes');
+  var contenedorChips = document.getElementById('chips-pais');
+
+  // ---- Navegación entre pasos ----
+  function actualizarVista() {
+    vistaBienvenida.style.display = estado.paso === 'bienvenida' ? '' : 'none';
+    vistaFormulario.style.display = estado.paso === 'formulario' ? '' : 'none';
+    vistaConfirmado.style.display = estado.paso === 'confirmado' ? '' : 'none';
+  }
+
+  document.getElementById('btn-crear-cuenta').addEventListener('click', function () {
+    estado.paso = 'formulario';
+    actualizarVista();
+  });
+
+  function renderConfirmacion() {
+    var nombrePais = estado.valores.pais !== null ? estado.paises[estado.valores.pais] : '-';
+    var fecha = (estado.valores.dia || '-') + '/' + (estado.valores.mes || '-') + '/' + (estado.valores.anio || '-');
+
+    listaConfirmacion.innerHTML =
+      '<li>Nombre: ' + escapeHtml(estado.valores.nombre) + '</li>' +
+      '<li>Apellido: ' + escapeHtml(estado.valores.apellido) + '</li>' +
+      '<li>Correo: ' + escapeHtml(estado.valores.correo) + '</li>' +
+      '<li>Teléfono: ' + escapeHtml(estado.valores.telefono) + '</li>' +
+      '<li>País: ' + escapeHtml(nombrePais) + '</li>' +
+      '<li>Fecha de nacimiento: ' + escapeHtml(fecha) + '</li>';
+  }
+
+  function escapeHtml(texto) {
+    var div = document.createElement('div');
+    div.textContent = texto == null ? '' : String(texto);
+    return div.innerHTML;
+  }
+
+  // ---- Chips de país ----
+  function renderChips() {
+    contenedorChips.innerHTML = '';
+    estado.paises.forEach(function (pais, i) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip' + (estado.seleccionado === i ? ' seleccionado' : '');
+      chip.textContent = pais;
+      chip.dataset.index = String(i);
+      chip.addEventListener('click', function () {
+        manejarClickChip(i);
+      });
+      contenedorChips.appendChild(chip);
+    });
+  }
+
+  function manejarClickChip(idx) {
+    if (estado.enviando) {
+      return; // mientras enviando es true, los clicks en los chips no hacen nada
+    }
+
+    // El valor guardado corresponde a la posición del chip, no al país
+    // que quedó ahí: al intercambiar, el índice no se mueve.
+    estado.valores.pais = idx;
+
+    if (estado.seleccionado === null) {
+      // Primer chip tocado
+      estado.seleccionado = idx;
+    } else if (estado.seleccionado === idx) {
+      // Click en el chip ya seleccionado: se deselecciona sin intercambiar
+      estado.seleccionado = null;
+    } else {
+      // Click en otro chip: se intercambian los países en esas dos posiciones
+      var temp = estado.paises[estado.seleccionado];
+      estado.paises[estado.seleccionado] = estado.paises[idx];
+      estado.paises[idx] = temp;
+      estado.seleccionado = null;
+    }
+
+    renderChips();
+  }
+
+  renderChips();
+
+  // Teléfono: rechaza "+" y espacios, sin explicar por qué
+  campos.telefono.addEventListener('input', function () {
+    var limpio = campos.telefono.value.replace(/[+\s]/g, '');
+    campos.telefono.value = limpio;
+  });
+
+  function sincronizarEstado() {
+    estado.valores.contrasena = campos.contrasena.value;
+    estado.valores.confirmarContrasena = campos.confirmarContrasena.value;
+    estado.valores.correo = campos.correo.value;
+    estado.valores.telefono = campos.telefono.value;
+    estado.valores.apellido = campos.apellido.value;
+    // estado.valores.pais NO se sincroniza aquí: se fija solo por click en los chips
+    estado.valores.nombre = campos.nombre.value;
+    estado.valores.anio = campos.anio.value;
+    estado.valores.mes = campos.mes.value;
+    estado.valores.dia = campos.dia.value;
+    estado.valores.aceptoTerminos = campos.aceptoTerminos.checked;
+    estado.valores.boletin = campos.boletin.checked;
+  }
+
+  function validarContrasena(valor) {
+    var tieneMayuscula = /[A-Z]/.test(valor);
+    var tieneNumero = /[0-9]/.test(valor);
+    var tieneSimbolo = /[^A-Za-z0-9]/.test(valor);
+    var longitudOk = valor.length >= 12;
+    return tieneMayuscula && tieneNumero && tieneSimbolo && longitudOk;
+  }
+
+  function validarTodo() {
+    var errores = [];
+
+    if (!validarContrasena(estado.valores.contrasena)) {
+      errores.push('contrasena');
+    }
+    if (estado.valores.confirmarContrasena !== estado.valores.contrasena ||
+        estado.valores.confirmarContrasena === '') {
+      errores.push('confirmarContrasena');
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(estado.valores.correo)) {
+      errores.push('correo');
+    }
+    if (estado.valores.telefono.trim() === '') {
+      errores.push('telefono');
+    }
+    if (estado.valores.apellido.trim() === '') {
+      errores.push('apellido');
+    }
+    if (estado.valores.pais === null) {
+      errores.push('pais');
+    }
+    if (estado.valores.nombre.trim() === '') {
+      errores.push('nombre');
+    }
+    if (!estado.valores.anio || !estado.valores.mes || !estado.valores.dia) {
+      errores.push('fechaNacimiento');
+    }
+    if (!estado.valores.aceptoTerminos) {
+      errores.push('aceptoTerminos');
+    }
+
+    return errores;
+  }
+
+  document.getElementById('btn-siguiente').addEventListener('click', function () {
+    sincronizarEstado();
+
+    estado.enviando = true; // mientras dura, los chips quedan inertes
+
+    var errores = validarTodo();
+    estado.errores = errores;
+    estado.enviado = true;
+
+    if (errores.length > 0) {
+      // Mensaje único y genérico, sin decir qué falló. Se queda en "formulario".
+      areaMensajes.textContent = 'Error';
+
+      // El requisito de contraseña solo aparece después del primer fallo,
+      // y solo si la contraseña fue una de las causas
+      if (errores.indexOf('contrasena') !== -1) {
+        fallosContrasenaPrevios = true;
+      }
+      if (fallosContrasenaPrevios) {
+        areaMensajes.textContent += ' (la contraseña debe tener mayúscula, número, símbolo y mínimo 12 caracteres)';
+      }
+
+      // Borrar por completo los campos de contraseña
+      campos.contrasena.value = '';
+      campos.confirmarContrasena.value = '';
+      estado.valores.contrasena = '';
+      estado.valores.confirmarContrasena = '';
+    } else {
+      // Todo pasó: se avanza al paso "confirmado" con los datos cargados
+      areaMensajes.textContent = '';
+      estado.paso = 'confirmado';
+      renderConfirmacion();
+      actualizarVista();
+    }
+
+    // El botón nunca se deshabilita: se pueden hacer envíos repetidos
+    setTimeout(function () {
+      estado.enviando = false;
+    }, 700);
+  });
+
+  // Temporizador: a los 60s, sin aviso, vacía todos los campos
+  setTimeout(function () {
+    campos.contrasena.value = '';
+    campos.confirmarContrasena.value = '';
+    campos.correo.value = '';
+    campos.telefono.value = '';
+    campos.apellido.value = '';
+    campos.nombre.value = '';
+    campos.anio.value = '';
+    campos.mes.value = '';
+    campos.dia.value = '';
+    campos.aceptoTerminos.checked = false;
+    campos.boletin.checked = true;
+
+    estado.paises = PAISES_INICIAL.slice();
+    estado.seleccionado = null;
+    estado.valores.pais = null;
+    renderChips();
+
+    sincronizarEstado();
+  }, 60000);
+
+  actualizarVista();
+})();
+</script>
+
+</body>
+</html>

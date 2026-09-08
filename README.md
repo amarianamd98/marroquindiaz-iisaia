@@ -2,8 +2,6 @@
 
 Repositorio del curso Introducción a la ingeniería de software asistida por Inteligencia Artificial.
 
-La carpeta `tp1/` viene con una entrega resuelta adentro, para que veas hasta dónde llega lo que se espera. Las otras dos vienen en blanco.
-
 ## Entregas
 
 | Entrega | Carpeta | Estado |
@@ -13,11 +11,11 @@ La carpeta `tp1/` viene con una entrega resuelta adentro, para que veas hasta d�
 | Trabajo Práctico Final | `tp-final/` | en blanco |
 
 ## Cómo se usa esta estructura
-
-Este `README.md` de la raíz es el índice: dice quién sos y qué hay en cada carpeta. Es lo primero que ve alguien que abre el repositorio, así que tiene que quedar claro para quien no tiene contexto.
-
-El `README.md` de adentro de cada carpeta es el informe de esa entrega: qué construiste, cómo lo dirigiste y cómo se ejecuta.
-
-En el ejemplo de `tp1/`, las dos secciones que más pesan al corregir son Decisiones que tomé y Qué salió mal y cómo lo corregí. La primera muestra qué elegí en lugar de aceptar el default del modelo; la segunda, que leí el prompt por lo bueno. El `prompts.md` va sin editar, defectos incluidos: el registro sirve como registro solo si es fiel.
-
-Las carpetas se crean cuando llega cada entrega. No hace falta armarlas vacías por adelantado.
+ 
+Este `README.md` de la raíz funciona como índice: cuenta quién soy y qué contiene cada carpeta. Es lo primero que ve cualquiera que entre al repositorio, así que debe quedar claro incluso para alguien sin contexto previo.
+ 
+El `README.md` dentro de cada carpeta es el informe de esa entrega: qué se construyó, cómo se dirigió el proceso y cómo se ejecuta.
+ 
+En el ejemplo de `tp1/`, las dos secciones que más pesan al momento de corregir son Decisiones que tomé y Qué salió mal y cómo lo corregí. La primera muestra qué elegí en vez de quedarme con el valor predeterminado del modelo; la segunda, que revisé el resultado con sentido crítico. El `prompts.md` se deja sin editar, errores incluidos: el registro solo sirve como tal si es fiel a lo que pasó.
+ 
+Las carpetas se crean a medida que llega cada entrega. No es necesario armarlas vacías de antemano.

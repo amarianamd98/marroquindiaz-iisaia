@@ -7,61 +7,34 @@ El registro del proceso, en orden. Tres prompts en una sola conversación de Gem
 ## 1 — Prompt inicial
 
 ```
-Construye un formulario de registro de datos personales que sea
-intencionalmente un desastre de UX, como ejercicio didáctico.
+Construye un formulario de registro de datos personales que sea intencionalmente un desastre de UX, como ejercicio didáctico.
+
 Estructura:
-- <header> con el título "Registro de usuario" y, debajo, una barra de
-  progreso de 3 pasos que nunca se actualiza (siempre se ve en el paso 1,
-  sin importar en qué parte del formulario esté el usuario).
-- <main> con los campos, en este orden exacto (deliberadamente ilógico):
-  contraseña, confirmar contraseña, correo electrónico, teléfono,
-  apellido, país (select), nombre, fecha de nacimiento (tres selects:
-  año empezando en 2024 y bajando de uno en uno, mes, día), checkbox
-  "Acepto términos y condiciones" (sin marcar) y checkbox "Suscribirme
-  al boletín publicitario" (premarcado). El campo "nombre" no debe
-  tener <label>, solo un ícono de usuario genérico. El campo "teléfono"
-  debe tener como único texto de ayuda "Número" sin especificar de qué
-  tipo ni formato.
-- <footer> con un <button> "Siguiente" y, debajo, un área para mensajes
-  de error.
+- <header> con el título "Registro de usuario" y, debajo, una barra de progreso de 3 pasos que nunca se actualiza (siempre se ve en el paso 1, sin importar en qué parte del formulario esté el usuario).
+- <main> con los campos, en este orden exacto (deliberadamente ilógico): contraseña, confirmar contraseña, correo electrónico, teléfono, apellido, país (select), nombre, fecha de nacimiento (tres selects: año empezando en 2024 y bajando de uno en uno, mes, día), checkbox "Acepto términos y condiciones" (sin marcar) y checkbox "Suscribirme al boletín publicitario" (premarcado). El campo "nombre" no debe tener <label>, solo un ícono de usuario genérico. El campo "teléfono" debe tener como único texto de ayuda "Número" sin especificar de qué tipo ni formato.
+- <footer> con un <button> "Siguiente" y, debajo, un área para mensajes de error.
+
 Estilo:
-- Fondo blanco, bordes de los inputs en gris muy claro (#eee) casi
-  invisibles sobre el fondo.
+- Fondo blanco, bordes de los inputs en gris muy claro (#eee) casi invisibles sobre el fondo.
 - Tipografía pequeña (11px) en todas las etiquetas.
-- Botón "Siguiente" y el texto plano del formulario deben verse
-  visualmente idénticos (mismo color, mismo peso), para que no quede
-  claro qué es clickeable.
+- Botón "Siguiente" y el texto plano del formulario deben verse visualmente idénticos (mismo color, mismo peso), para que no quede claro qué es clickeable.
 - Cero indicación de foco visible al navegar con teclado.
+
 Comportamiento:
-- Estado: valores (objeto con los campos), errores (array), enviado
-  (booleano).
-- El botón "Siguiente" no avanza a ningún paso 2 real: al hacer click,
-  ejecuta la validación de todos los campos de una sola vez (nunca en
-  tiempo real mientras el usuario escribe).
-- Si hay errores, mostrar un único mensaje genérico "Error" en el área
-  de mensajes, sin decir cuál campo falló ni por qué. Además, borrar
-  por completo el contenido de los campos de contraseña (no solo
-  marcarlos) obligando a reescribirlos.
-- La validación de contraseña exige mayúscula, número, símbolo y
-  mínimo 12 caracteres, pero ese requisito solo se muestra después de
-  que el usuario falla la primera vez, nunca antes.
-- El campo "teléfono" debe rechazar el símbolo "+" y los espacios, sin
-  explicar por qué en ningún mensaje.
-- El selector de país debe tener al menos 20 opciones sin buscador y
-  en un orden aleatorio (no alfabético).
-- Si todos los campos pasan la validación, no mostrar ninguna
-  confirmación visual: la pantalla se queda igual, como si no hubiera
-  pasado nada.
-- Agregar un temporizador: a los 60 segundos de cargada la página, sin
-  ningún aviso previo, vaciar todos los campos del formulario.
-- El botón "Siguiente" no debe deshabilitarse tras hacer click, para
-  permitir múltiples envíos seguidos.
+- Estado: valores (objeto con los campos), errores (array), enviado (booleano).
+- El botón "Siguiente" no avanza a ningún paso 2 real: al hacer click, ejecuta la validación de todos los campos de una sola vez (nunca en tiempo real mientras el usuario escribe).
+- Si hay errores, mostrar un único mensaje genérico "Error" en el área de mensajes, sin decir cuál campo falló ni por qué. Además, borrar por completo el contenido de los campos de contraseña (no solo marcarlos) obligando a reescribirlos.
+- La validación de contraseña exige mayúscula, número, símbolo y mínimo 12 caracteres, pero ese requisito solo se muestra después de que el usuario falla la primera vez, nunca antes.
+- El campo "teléfono" debe rechazar el símbolo "+" y los espacios, sin explicar por qué en ningún mensaje.
+- El selector de país debe tener al menos 20 opciones sin buscador y en un orden aleatorio (no alfabético).
+- Si todos los campos pasan la validación, no mostrar ninguna confirmación visual: la pantalla se queda igual, como si no hubiera pasado nada.
+- Agregar un temporizador: a los 60 segundos de cargada la página, sin ningún aviso previo, vaciar todos los campos del formulario.
+- El botón "Siguiente" no debe deshabilitarse tras hacer click, para permitir múltiples envíos seguidos.
+
 Constraints:
-- Un solo archivo HTML, con el CSS en un <style> y el JS en un
-  <script>.
+- Un solo archivo HTML, con el CSS en un <style> y el JS en un <script>.
 - Vanilla JS, sin frameworks ni dependencias externas.
-- No necesita conectarse a ningún backend real; el envío puede
-  simularse con JavaScript.
+- No necesita conectarse a ningún backend real; el envío puede simularse con JavaScript.
 ```
 
 **Qué intentaba lograr:** el artefacto entero de una sola vez, nombrando las cinco capas — estructura con etiquetas semánticas, estilo, comportamiento expresado como estado, y constraints de empaque.
